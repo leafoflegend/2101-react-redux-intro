@@ -1,28 +1,47 @@
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
-import EventEmitter from './event_emitter';
+import EliotDux from './eliotdux';
 
 const startup = new Date();
 
-const ee = new EventEmitter();
+const initialState = {
+    counter: 0,
+};
+
+const INCREMENT = 'INCREMENT';
+
+const incrementCounter = () => ({
+    type: INCREMENT,
+});
+
+const reducer = (action, state = initialState) => {
+    if (action.type === INCREMENT) {
+        return {
+            ...state,
+            counter: state.counter + 1,
+        };
+    }
+
+    return state;
+}
+
+const store = new EliotDux(reducer);
 
 class CounterWithEventEmitter extends Component {
-    state = {
-        counter: 0,
-    };
+    state = store.getState();
 
     componentDidMount() {
-        ee.subscribe('increment', () => {
-            const { counter } = this.state;
-
-            this.setState({
-                counter: counter + 1,
-            });
+        this.unsub = store.subscribe(() => {
+            this.setState(store.getState());
         });
     }
 
+    componentWillUnmount() {
+        this.unsub();
+    }
+
     increment = () => {
-        ee.emit('increment');
+        store.dispatch(incrementCounter());
     }
 
     render() {
