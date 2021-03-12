@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
 import EliotDux from './eliotdux';
+import { eliotsConnect, EliotsProvider } from './eliot_connect';
 
 const startup = new Date();
 
@@ -27,25 +28,9 @@ const reducer = (action, state = initialState) => {
 
 const store = new EliotDux(reducer);
 
-class CounterWithEventEmitter extends Component {
-    state = store.getState();
-
-    componentDidMount() {
-        this.unsub = store.subscribe(() => {
-            this.setState(store.getState());
-        });
-    }
-
-    componentWillUnmount() {
-        this.unsub();
-    }
-
-    increment = () => {
-        store.dispatch(incrementCounter());
-    }
-
+class Counter extends Component {
     render() {
-        const { counter } = this.state;
+        const { counter, increment } = this.props;
 
         return (
             <div
@@ -59,15 +44,37 @@ class CounterWithEventEmitter extends Component {
                 }}
             >
                 <h1>{ counter }</h1>
-                <button onClick={this.increment}>Increment</button>
+                <button onClick={increment}>Increment</button>
             </div>
+        );
+    }
+}
+
+const mapStateToProps = ({ counter }) => ({
+    counter,
+});
+const mapDispatchToProps = (dispatch) => ({
+    increment: () => dispatch(incrementCounter()),
+});
+
+const ConnectedCounter = eliotsConnect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Counter);
+
+class App extends Component {
+    render() {
+        return (
+            <EliotsProvider store={store} >
+                <ConnectedCounter />
+            </EliotsProvider>
         );
     }
 }
 
 const appDiv = document.querySelector('#app');
 
-ReactDOM.render(<CounterWithEventEmitter />, appDiv, () => {
+ReactDOM.render(<App />, appDiv, () => {
     const rendered = new Date();
     console.log(`Application rendered in ${((rendered - startup) / 1000).toFixed(2)} seconds.`);
 });
