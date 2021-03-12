@@ -1,3 +1,4 @@
+// Redux is just a fancy version of this. This is one of the most common patterns in all of programming.
 class EventEmitter {
     subscriptions = {};
 

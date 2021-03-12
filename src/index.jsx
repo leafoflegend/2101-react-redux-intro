@@ -3,18 +3,24 @@ import React, { Component } from 'react';
 import createStore from './eliotdux';
 import { eliotsConnect, EliotsProvider } from './eliot_connect';
 
+// Ignore, just a nice thing for seeing how quickly the app starts up...
 const startup = new Date();
 
+// Initial State
 const initialState = {
     counter: 0,
 };
 
+// Action Type
 const INCREMENT = 'INCREMENT';
 
+// Action Creator
 const incrementCounter = () => ({
     type: INCREMENT,
 });
 
+// Reducer
+// Yes, yes, I know, you can use switch. Whatever floats your ⛵️!
 const reducer = (action, state = initialState) => {
     if (action.type === INCREMENT) {
         return {
@@ -26,6 +32,7 @@ const reducer = (action, state = initialState) => {
     return state;
 }
 
+// We create the store by giving it the reducer! See the store implementation for what it does!
 const store = createStore(reducer);
 
 class Counter extends Component {
@@ -50,13 +57,16 @@ class Counter extends Component {
     }
 }
 
+// Takes the redux stores current state, maps it to an object whos keys will get passed as props to the connected component, with the values.
 const mapStateToProps = ({ counter }) => ({
     counter,
 });
+// Same as above, but offers dispatch instead of state. Allows us to pass functions that dispatch to the redux store without actually referencing the store (connect does the referencing).
 const mapDispatchToProps = (dispatch) => ({
     increment: () => dispatch(incrementCounter()),
 });
 
+// We call connect, which returns ANOTHER FUNCTION, which we then call with our component. This returns a HOC (Higher Order Component) that is passed the props we specified in mapStateToProps and mapDispatchToProps, as well as any other props we pass into it... This also connects it to the store!
 const ConnectedCounter = eliotsConnect(
     mapStateToProps,
     mapDispatchToProps,
@@ -65,7 +75,8 @@ const ConnectedCounter = eliotsConnect(
 class App extends Component {
     render() {
         return (
-            <EliotsProvider store={store} >
+            // We pass the store in here, this is how we propogate the stores reference throughout the entire React tree (using a thing called Context, its like props, but doesnt require us to manually pass things forward).
+            <EliotsProvider store={store}>
                 <ConnectedCounter />
             </EliotsProvider>
         );
