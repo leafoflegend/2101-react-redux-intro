@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
-import EliotDux from './eliotdux';
+import createStore from './eliotdux';
 import { eliotsConnect, EliotsProvider } from './eliot_connect';
 
 const startup = new Date();
@@ -26,7 +26,7 @@ const reducer = (action, state = initialState) => {
     return state;
 }
 
-const store = new EliotDux(reducer);
+const store = createStore(reducer);
 
 class Counter extends Component {
     render() {

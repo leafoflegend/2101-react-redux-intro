@@ -33,4 +33,8 @@ class EliotDux {
     getState = () => this.state;
 }
 
-export default EliotDux;
+const createStore = (reducer) => {
+    return new EliotDux(reducer);
+}
+
+export default createStore;
