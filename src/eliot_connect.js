@@ -1,4 +1,4 @@
-import React, { Component, createContext, cloneElement } from 'react';
+import React, { Component, createContext } from 'react';
 
 const StoreContext = createContext({});
 
