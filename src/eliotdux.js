@@ -10,7 +10,7 @@ class EliotDux {
     constructor(reducer) {
         // We store the reducer (we'll need it on future dispatches).
         this.reducer = reducer;
-        // We IMMEDIATELY create state. We do this by running an action you cant match through the reducer. This will return your initial state (since thats what reducers do in their 'default' right?
+        // We IMMEDIATELY create state. We do this by running an action you cant match through the reducer. This will return your initial state (since thats what reducers do in their 'default' right?)
         this.state = this.reducer({
             type: INITIAL_ACTION,
         });
