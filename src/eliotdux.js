@@ -35,11 +35,15 @@ class EliotDux {
     }
 
     dispatch = (action) => {
-        // Most IMPORTANT line of code in all of redux. When you dispatch an action, the new state is equal to the old state, reduced by the action you dispatched.
-        this.state = this.reducer(action, this.state);
+        if (typeof action === 'function') {
+            action(this.dispatch, this.getState);
+        } else {
+            // Most IMPORTANT line of code in all of redux. When you dispatch an action, the new state is equal to the old state, reduced by the action you dispatched.
+            this.state = this.reducer(action, this.state);
 
-        // Now that we have a new state (we actually might not, it could in theory be the same state, but i digress), we need to tell everyone! #emit calls every single subscription.
-        this.#emit();
+            // Now that we have a new state (we actually might not, it could in theory be the same state, but i digress), we need to tell everyone! #emit calls every single subscription.
+            this.#emit();
+        }
     }
 
     // Well, we get ya the state.
